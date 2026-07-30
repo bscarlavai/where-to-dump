@@ -81,8 +81,18 @@ centers, e-waste dropoff, scrap metal, RV dump stations.
   `npm run score` after each state import.
 - Trailing-slash mismatch: sitemap URLs emit trailing slashes; Next redirects
   to non-slash (308). Align before launch (set trailingSlash or fix sitemap).
-- Enrichment pipeline not started: EPA LMOP + IDEM permit join, Playwright
-  fees/materials scraper (the moat data — see research-notes.md).
+- Enrichment (see research-notes.md for sources). Repeatable per state:
+  1. [x] EPA LMOP join — `npm run enrich:lmop -- --state <slug> [--dry-run]`
+     (download xlsx per header comment in scripts/enrich/lmop.ts first).
+     Fills operator + capacity_notes on auto-tier matches only; prints
+     review-tier candidates and unmatched-open coverage gaps — always dry-run
+     and eyeball before writing. Matcher (scripts/enrich/match.ts, shared for
+     all joins) requires 2 shared name tokens or <=0.3mi to auto-match.
+     Indiana done 2026-07-30: 21 auto, 11 review (unactioned), 8 open
+     landfills we don't list (coverage gaps worth adding).
+  2. [ ] IDEM/state permit join (permit_number, permit_status) — reuse match.ts
+  3. [ ] Playwright fees/accepted-materials scraper (the moat)
+  4. [ ] E-waste collector lists + INDOT/OSM RV dump seeds
 - Deploy prereqs: buy domain, `wrangler d1 create wheretodump-db` (+ id into
   wrangler.jsonc), `wrangler r2 bucket create wheretodump-inc-cache`,
   Cloudflare Access app for /admin* + /api/admin* (see Admin review above),

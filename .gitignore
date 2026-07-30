@@ -58,3 +58,6 @@ next-env.d.ts
 
 # generated
 src/lib/guide-registry.generated.ts
+
+# enrichment source downloads (re-fetch per script header comments)
+enrichment-data/

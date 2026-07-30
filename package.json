@@ -14,7 +14,8 @@
     "build:worker": "opennextjs-cloudflare build",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "deploy:only": "opennextjs-cloudflare deploy",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview"
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "enrich:lmop": "tsx scripts/enrich/lmop.ts"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.18.0",
@@ -40,6 +41,7 @@
     "eslint-config-next": "16.2.1",
     "playwright": "^1.58.2",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "xlsx": "^0.18.5"
   }
 }
