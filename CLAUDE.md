@@ -111,8 +111,12 @@ centers, e-waste dropoff, scrap metal, RV dump stations.
      heuristics + provenance (enrich_source_url, enrich_scraped_at). Tune
      rules, re-run extraction — no re-crawl needed. Indiana 2026-07-30:
      412 sites crawled, 53 facilities with fees, 315 with materials, 17 with
-     residency rules. STILL TODO: county SWMD site crawl (fees often live on
-     district sites, not facility sites), filter UI + "accepts X" SEO pages.
+     residency rules. Filter UI (city-page "Accepts" chips) + "accepts X"
+     SEO pages (/[state]/accepts/[slug]: tires, appliances, yard-waste,
+     construction-debris; sitemap-gated to states with data) shipped.
+     STILL TODO: county SWMD site crawl — fees often live on district sites,
+     not facility sites; attribute conservatively (district-run facilities
+     only, name/city must appear in site text).
   4. [ ] E-waste collector lists + INDOT/OSM RV dump seeds
 - Deploy prereqs: buy domain, `wrangler d1 create wheretodump-db` (+ id into
   wrangler.jsonc), `wrangler r2 bucket create wheretodump-inc-cache`,
