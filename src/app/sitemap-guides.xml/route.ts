@@ -7,9 +7,9 @@ export async function GET() {
   const guides = getAllGuides();
 
   const urls = [
-    { loc: `${BASE_URL}/guides/`, priority: '0.7', changefreq: 'weekly' },
+    { loc: `${BASE_URL}/guides`, priority: '0.7', changefreq: 'weekly' },
     ...guides.map((guide) => ({
-      loc: `${BASE_URL}/guides/${guide.slug}/`,
+      loc: `${BASE_URL}/guides/${guide.slug}`,
       priority: '0.6',
       changefreq: 'monthly',
       lastmod: guide.frontmatter.updatedAt || guide.frontmatter.publishedAt,

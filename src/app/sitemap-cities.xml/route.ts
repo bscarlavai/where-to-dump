@@ -18,7 +18,7 @@ export async function GET() {
     .all<{ state_slug: string; city_slug: string }>();
 
   const urls = cities.map((c) => ({
-    loc: `${BASE_URL}/${c.state_slug}/${c.city_slug}/`,
+    loc: `${BASE_URL}/${c.state_slug}/${c.city_slug}`,
     changefreq: "monthly",
     priority: "0.7",
   }));

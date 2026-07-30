@@ -45,7 +45,7 @@ export async function GET() {
   const facilities = allFacilities.slice(0, MAX_URLS_PER_SITEMAP);
 
   const urls = facilities.map((f) => ({
-    loc: `${BASE_URL}/${f.state_slug}/${f.city_slug}/${f.slug}/`,
+    loc: `${BASE_URL}/${f.state_slug}/${f.city_slug}/${f.slug}`,
     lastmod: f.updated_at?.split(/[T ]/)[0],
     changefreq: "weekly",
     priority: "0.6",

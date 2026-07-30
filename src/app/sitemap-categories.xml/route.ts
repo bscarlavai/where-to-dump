@@ -30,7 +30,7 @@ export async function GET() {
     // one URL per state × category
     ...states.flatMap((s) =>
       Object.keys(CATEGORY_SLUG_MAP).map((categorySlug) => ({
-        loc: `${BASE_URL}/${s.state_slug}/category/${categorySlug}/`,
+        loc: `${BASE_URL}/${s.state_slug}/category/${categorySlug}`,
         changefreq: "monthly",
         priority: "0.6",
       }))
@@ -40,7 +40,7 @@ export async function GET() {
       Object.entries(ACCEPTS_SLUG_MAP)
         .filter(([, material]) => materialsByState.get(s.state_slug)?.has(material))
         .map(([slug]) => ({
-          loc: `${BASE_URL}/${s.state_slug}/accepts/${slug}/`,
+          loc: `${BASE_URL}/${s.state_slug}/accepts/${slug}`,
           changefreq: "monthly",
           priority: "0.6",
         }))

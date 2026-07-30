@@ -55,8 +55,7 @@ centers, e-waste dropoff, scrap metal, RV dump stations.
 8. [~] Writes: all dangerous routes deleted (no admin/auth/submit APIs in v1).
        In-memory rate limiter still on the 3 read routes — swap for CF Rate
        Limiting when adding real write endpoints
-9. [ ] Guides: farm MDX deleted; write waste-vertical guides (mattress, fees,
-       e-waste by state, RV etiquette)
+9. [x] Guides: 8 waste-vertical guides live (see src/content/guides)
 10. [x] Design: "Hi-Vis Industrial" — safety orange #FF6B1A + asphalt charcoal
         #1A1D21, Barlow Condensed display + Barlow body, sharp corners, charcoal
         nav. Tokens in globals.css.
@@ -114,9 +113,7 @@ centers, e-waste dropoff, scrap metal, RV dump stations.
      residency rules. Filter UI (city-page "Accepts" chips) + "accepts X"
      SEO pages (/[state]/accepts/[slug]: tires, appliances, yard-waste,
      construction-debris; sitemap-gated to states with data) shipped.
-     STILL TODO: county SWMD site crawl — fees often live on district sites,
-     not facility sites; attribute conservatively (district-run facilities
-     only, name/city must appear in site text).
+     SWMD district crawl done 2026-07-30 (scrape-swmd.ts + extract-swmd.ts, host-matched attribution): totals 66 fees, 347 materials, 21 residency.
   4. [ ] E-waste collector lists + INDOT/OSM RV dump seeds
 - Deploy prereqs: buy domain, `wrangler d1 create wheretodump-db` (+ id into
   wrangler.jsonc), `wrangler r2 bucket create wheretodump-inc-cache`,

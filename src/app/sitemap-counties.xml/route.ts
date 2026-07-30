@@ -20,7 +20,7 @@ export async function GET() {
     .all<{ state_slug: string; county_slug: string }>();
 
   const urls = counties.map((c) => ({
-    loc: `${BASE_URL}/${c.state_slug}/county/${c.county_slug}/`,
+    loc: `${BASE_URL}/${c.state_slug}/county/${c.county_slug}`,
     changefreq: "monthly",
     priority: "0.6",
   }));

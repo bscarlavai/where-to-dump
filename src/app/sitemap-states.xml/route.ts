@@ -8,7 +8,7 @@ export async function GET() {
   const states = await getAllStates();
 
   const urls = states.map((s) => ({
-    loc: `${BASE_URL}/${s.slug}/`,
+    loc: `${BASE_URL}/${s.slug}`,
     changefreq: "monthly",
     priority: "0.8",
   }));
