@@ -22,6 +22,19 @@ export interface ReviewRow {
   review_score: number | null;
   review_reasons: string[];
   rejection_reason: string | null;
+  admin_notes: string | null;
+}
+
+function recChip(notes: string | null): { label: string; cls: string; reason: string } | null {
+  const m = notes?.match(/^AI rec: (APPROVE|REJECT|UNSURE) — (.*)$/);
+  if (!m) return null;
+  const cls =
+    m[1] === "APPROVE"
+      ? "bg-green text-white"
+      : m[1] === "REJECT"
+        ? "bg-red text-white"
+        : "bg-primary-pale text-primary";
+  return { label: m[1], cls, reason: m[2] };
 }
 
 function scoreColor(score: number | null): string {
@@ -184,6 +197,15 @@ export function ReviewTable({ rows }: { rows: ReviewRow[] }) {
               {row.review_reasons.length > 0 && (
                 <div className="text-xs text-text-light mt-1">{row.review_reasons.join(" · ")}</div>
               )}
+              {(() => {
+                const rec = recChip(row.admin_notes);
+                return rec ? (
+                  <div className="text-xs mt-1.5 flex items-start gap-1.5">
+                    <span className={`font-bold px-1.5 py-0.5 rounded shrink-0 ${rec.cls}`}>{rec.label}</span>
+                    <span className="text-text-mid">{rec.reason}</span>
+                  </div>
+                ) : null;
+              })()}
             </div>
             <div className="flex gap-1.5 shrink-0">
               <button

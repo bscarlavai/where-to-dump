@@ -47,7 +47,7 @@ export default async function AdminPage({ searchParams }: Props) {
       .prepare(
         `SELECT id, name, slug, state_slug, city_slug, city, state_abbr, facility_type,
                 google_primary_type, google_rating, google_review_count, google_maps_url,
-                website, review_score, review_reasons, rejection_reason
+                website, review_score, review_reasons, rejection_reason, admin_notes
          FROM facilities
          WHERE service_only = 0 AND status = ?1 ${needsReview ? "AND (review_score < 60 OR review_score IS NULL)" : ""}
          ORDER BY review_score ASC, google_review_count DESC
