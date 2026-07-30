@@ -26,8 +26,8 @@ export const metadata: Metadata = {
   description:
     "Find the nearest place to dump your trash. Landfills, transfer stations, recycling centers, e-waste drop-off, scrap yards, and RV dump stations across the United States, with hours, fees, and what they accept.",
   icons: {
-    icon: "/favicon.png?v=2",
-    apple: "/apple-touch-icon.png?v=2",
+    icon: "/favicon.png?v=3",
+    apple: "/apple-touch-icon.png?v=3",
   },
 };
 

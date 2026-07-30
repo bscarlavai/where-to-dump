@@ -67,23 +67,30 @@ const OG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" widt
 </svg>`;
 
 // ─── Render helpers ──────────────────────────────────────────
+// qlmanage mangles small targets (art shrinks into a corner below ~200px),
+// so always rasterize large and downsample with sips.
 function render(name: string, content: string, size: number, outPath: string) {
   const svgPath = resolve(work, `${name}.svg`);
   writeFileSync(svgPath, content);
-  execFileSync('qlmanage', ['-t', '-s', String(size), '-o', work, svgPath], { stdio: 'ignore' });
-  renameSync(`${svgPath}.png`, resolve(root, outPath));
+  const qlSize = Math.max(size, 512);
+  execFileSync('qlmanage', ['-t', '-s', String(qlSize), '-o', work, svgPath], { stdio: 'ignore' });
+  const out = resolve(root, outPath);
+  renameSync(`${svgPath}.png`, out);
+  if (size < qlSize) {
+    execFileSync('sips', ['-z', String(size), String(size), out], { stdio: 'ignore' });
+  }
   console.log(`${outPath} (${size}px)`);
 }
 
-render('favicon', svg('width="64" height="64"', plateMark), 64, 'public/favicon.png');
-render('apple', svg('width="180" height="180"', fullBleedMark), 180, 'public/apple-touch-icon.png');
+render('favicon', svg('width="512" height="512"', plateMark), 64, 'public/favicon.png');
+render('apple', svg('width="512" height="512"', fullBleedMark), 180, 'public/apple-touch-icon.png');
 render('logo', svg('width="512" height="512"', transparentMark), 512, 'public/logo.png');
 render('og', OG, 1200, 'src/app/opengraph-image.png');
 // Center-crop the square render down to the 1200x630 band
 execFileSync('sips', ['-c', '630', '1200', resolve(root, 'src/app/opengraph-image.png')], { stdio: 'ignore' });
 
 // favicon.ico: 32px plate PNG wrapped in an ICO container
-render('ico32', svg('width="32" height="32"', plateMark), 32, 'public/.ico32.png');
+render('ico32', svg('width="512" height="512"', plateMark), 32, 'public/.ico32.png');
 const png = readFileSync(resolve(root, 'public/.ico32.png'));
 const header = Buffer.alloc(6 + 16);
 header.writeUInt16LE(0, 0);      // reserved
