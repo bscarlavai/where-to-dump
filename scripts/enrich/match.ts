@@ -15,6 +15,7 @@ export interface MatchSource {
   lat: number | null;
   lng: number | null;
   county?: string | null;
+  city?: string | null;
 }
 
 export interface MatchTarget {
@@ -23,6 +24,7 @@ export interface MatchTarget {
   lat: number | null;
   lng: number | null;
   county?: string | null;
+  city?: string | null;
 }
 
 export interface MatchResult<T extends MatchTarget> {
@@ -34,7 +36,8 @@ export interface MatchResult<T extends MatchTarget> {
 
 // Filler tokens that inflate overlap without identifying anything
 const STOPWORDS = new Set([
-  'landfill', 'lf', 'inc', 'llc', 'co', 'corp', 'company', 'county', 'city',
+  'landfill', 'lf', 'inc', 'incorporated', 'llc', 'ltd', 'limited', 'dba',
+  'co', 'corp', 'company', 'county', 'city',
   'of', 'the', 'and', 'sanitary', 'sanitation', 'municipal', 'solid', 'waste',
   'disposal', 'facility', 'site', 'services', 'service', 'management', 'swmd',
   'district', 'recycling', 'transfer', 'station', 'north', 'south', 'east', 'west',
@@ -89,17 +92,45 @@ export function bestMatch<T extends MatchTarget>(
   let best: MatchResult<T> | null = null;
 
   for (const t of targets) {
-    const { score: nameScore, shared } = tokenOverlap(srcTokens, nameTokens(t.name));
-    const distanceMiles =
+    // "Fort Wayne Transfer Station" vs "Fort Wayne <anything>" is a match on
+    // the CITY, not the facility — drop both sides' city tokens before scoring
+    const cityTokens = new Set([
+      ...nameTokens(source.city ?? ''),
+      ...nameTokens(t.city ?? ''),
+    ]);
+    const a = new Set([...srcTokens].filter((x) => !cityTokens.has(x)));
+    const b = new Set([...nameTokens(t.name)].filter((x) => !cityTokens.has(x)));
+
+    let { score: nameScore, shared } = tokenOverlap(a, b);
+
+    const distancePre =
       source.lat != null && source.lng != null && t.lat != null && t.lng != null
         ? haversineMiles(source.lat, source.lng, t.lat, t.lng)
         : null;
+
+    // Space-insensitive form catches "Southside" vs "South Side"; only counts
+    // as a strong (auto-capable) signal when the sites are close or the fused
+    // names are identical — substring containment alone overreaches
+    const srcFused = [...a].sort().join('');
+    const tgtFused = [...b].sort().join('');
+    if (
+      srcFused.length >= 5 &&
+      tgtFused.length >= 5 &&
+      (srcFused.includes(tgtFused) || tgtFused.includes(srcFused))
+    ) {
+      nameScore = Math.max(nameScore, 1);
+      if (srcFused === tgtFused || (distancePre != null && distancePre <= 1.5)) {
+        shared = Math.max(shared, 2);
+      }
+    }
+    const distanceMiles = distancePre;
     const tgtCounty = t.county?.toLowerCase().replace(/\s*county\s*$/i, '') ?? null;
     const sameCounty = srcCounty != null && tgtCounty != null && srcCounty === tgtCounty;
 
     let tier: 'auto' | 'review' | null = null;
     if (distanceMiles != null) {
       if (
+        distanceMiles <= 0.15 || // same parcel — names can differ completely
         (distanceMiles <= 0.3 && nameScore > 0) ||
         (shared >= 2 &&
           ((distanceMiles <= 1.5 && nameScore >= 0.5) || (nameScore === 1 && distanceMiles <= 5)))

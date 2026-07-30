@@ -85,7 +85,7 @@ interface FacilityRow extends MatchTarget {
   capacity_notes: string | null;
 }
 const facilities = d1Query<FacilityRow>(root,
-  `SELECT id, place_id, name, lat, lng, county, facility_type, operator, capacity_notes
+  `SELECT id, place_id, name, lat, lng, county, city, facility_type, operator, capacity_notes
    FROM facilities
    WHERE state_slug = '${stateSlug}' AND service_only = 0
      AND facility_type IN ('landfill', 'transfer_station', 'unknown')`
@@ -140,7 +140,7 @@ for (const r of lmop) {
   }
 
   const m = bestMatch(
-    { name: r['Landfill Name'], lat: r.Latitude, lng: r.Longitude, county: r.County },
+    { name: r['Landfill Name'], lat: r.Latitude, lng: r.Longitude, county: r.County, city: r.City },
     facilities.filter((f) => !claimed.has(f.id))
   );
 
