@@ -1,0 +1,10 @@
+{
+  "_comment": "Hand-verified joins the name matcher can't make (external name != Google name). Keyed by source record ID -> our place_id. Verified via LMOP owner org + targeted Outscraper queries 2026-07-30.",
+  "lmop": {
+    "532": "ChIJgYNTQN9qbogRZpRtlbk2_aQ",
+    "538": "ChIJWxIojD_XbYgRgcOxxM4GPZw",
+    "545": "ChIJQbAA9TDNaogRrBEPWx14W84",
+    "1943": "ChIJV0KGYJjWcYgRSAUxghCQGYI",
+    "573": "ChIJ64LWE49cbYgR-8iEhQOArMQ"
+  }
+}

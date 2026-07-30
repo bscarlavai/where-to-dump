@@ -71,18 +71,26 @@ for (const row of all) {
 const lmop = [...byId.values()];
 console.log(`LMOP: ${lmop.length} ${stateAbbr} landfills (${lmop.filter((r) => r['Current Landfill Status'] === 'Open').length} open)`);
 
+// ─── Hand-verified aliases (LMOP Landfill ID -> place_id) ────
+const ALIASES_PATH = resolve(root, 'db', 'enrichment-aliases.json');
+const aliases: Record<string, string> = existsSync(ALIASES_PATH)
+  ? JSON.parse(readFileSync(ALIASES_PATH, 'utf-8')).lmop ?? {}
+  : {};
+
 // ─── Load our facilities ─────────────────────────────────────
 interface FacilityRow extends MatchTarget {
+  place_id: string | null;
   facility_type: string;
   operator: string | null;
   capacity_notes: string | null;
 }
 const facilities = d1Query<FacilityRow>(root,
-  `SELECT id, name, lat, lng, county, facility_type, operator, capacity_notes
+  `SELECT id, place_id, name, lat, lng, county, facility_type, operator, capacity_notes
    FROM facilities
    WHERE state_slug = '${stateSlug}' AND service_only = 0
      AND facility_type IN ('landfill', 'transfer_station', 'unknown')`
 );
+const byPlaceId = new Map(facilities.filter((f) => f.place_id).map((f) => [f.place_id!, f]));
 console.log(`Ours: ${facilities.length} landfill/transfer/unknown facilities in ${stateSlug}\n`);
 
 // ─── Match ───────────────────────────────────────────────────
@@ -116,11 +124,25 @@ const unmatchedOpen: string[] = [];
 const claimed = new Set<number>();
 
 for (const r of lmop) {
+  const label = `${r['Landfill Name']} (${r['Current Landfill Status']}, ${r.County ?? '?'} Co.)`;
+
+  // Hand-verified alias wins over the fuzzy matcher
+  const aliased = aliases[String(r['Landfill ID'])] ? byPlaceId.get(aliases[String(r['Landfill ID'])]) : undefined;
+  if (aliased && !claimed.has(aliased.id)) {
+    claimed.add(aliased.id);
+    updates.push({
+      id: aliased.id,
+      operator: r['Landfill Owner Organization(s)'],
+      notes: capacityNotes(r),
+      label: `${label} -> ${aliased.name} [alias]`,
+    });
+    continue;
+  }
+
   const m = bestMatch(
     { name: r['Landfill Name'], lat: r.Latitude, lng: r.Longitude, county: r.County },
     facilities.filter((f) => !claimed.has(f.id))
   );
-  const label = `${r['Landfill Name']} (${r['Current Landfill Status']}, ${r.County ?? '?'} Co.)`;
 
   if (m?.tier === 'auto') {
     claimed.add(m.target.id);

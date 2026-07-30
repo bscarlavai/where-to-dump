@@ -151,7 +151,7 @@ for (const r of rows) {
     ${q(r.street)}, ${q(r.city)}, ${q(stateName)}, ${q(stateAbbr)}, ${q(r.postal_code)}, ${q(r.county)}, ${q(r.latitude)}, ${q(r.longitude)}, ${q(r.time_zone)},
     ${q(r.phone)}, ${q(cleanWebsiteUrl(r.website))}, ${q(r.location_link)},
     ${q(r.rating)}, ${q(r.reviews ?? 0)}, ${q(r.business_status)}, ${q(r.type)},
-    ${qj(r.subtypes ?? null)}, ${qj(r.working_hours ?? null)}, ${qj(r.about ?? null)}, ${q(r.description)}, ${q(r.photo)}, ${q(r.photos_count ?? 0)}, ${q(r.place_id ? cfImagesMap[r.place_id] ?? null : null)},
+    ${r.subtypes ? qj(r.subtypes) : `'[]'`}, ${qj(r.working_hours ?? null)}, ${qj(r.about ?? null)}, ${q(r.description)}, ${q(r.photo)}, ${q(r.photos_count ?? 0)}, ${q(r.place_id ? cfImagesMap[r.place_id] ?? null : null)},
     ${qj(r.source_queries)}
   );`);
 }

@@ -88,8 +88,14 @@ centers, e-waste dropoff, scrap metal, RV dump stations.
      review-tier candidates and unmatched-open coverage gaps — always dry-run
      and eyeball before writing. Matcher (scripts/enrich/match.ts, shared for
      all joins) requires 2 shared name tokens or <=0.3mi to auto-match.
-     Indiana done 2026-07-30: 21 auto, 11 review (unactioned), 8 open
-     landfills we don't list (coverage gaps worth adding).
+     Name-mismatch joins live in db/enrichment-aliases.json (hand-verified,
+     committed — the matcher consults it first). Gap-filling: put missing
+     facility names in a queries file and run scripts/ingest/targeted.ts
+     (PAID Outscraper — ask first), then backfill-county -> import -> photos
+     -> score -> re-run enrich:lmop.
+     Indiana done 2026-07-30: 28 enriched (23 matched + 5 aliases), 11 review
+     candidates unactioned, 1 known gap (United Refuse LF, Fort Wayne — no
+     Google listing exists; add manually from LMOP if desired).
   2. [ ] IDEM/state permit join (permit_number, permit_status) — reuse match.ts
   3. [ ] Playwright fees/accepted-materials scraper (the moat)
   4. [ ] E-waste collector lists + INDOT/OSM RV dump seeds
