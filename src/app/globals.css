@@ -1,0 +1,169 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* ─── Hi-Vis Industrial Design System ───
+ * Values live directly in @theme so Tailwind both emits the :root variables
+ * and generates the utilities. Never re-declare these names in :root — a
+ * `--color-x: var(--color-x)` cycle makes the property invalid and silently
+ * kills every utility that uses it. */
+@theme {
+  /* Primary — Asphalt Charcoal (true neutral, no blue cast) */
+  --color-primary: #1B1C1E;
+  --color-primary-light: #2E3033;
+  --color-primary-pale: #EEEEEF;
+
+  /* Accent — Safety Orange */
+  --color-accent: #FF6B1A;
+  --color-accent-light: #FF8747;
+  --color-accent-pale: #FFF0E6;
+
+  /* Secondary — Caution Red (alerts, closed) */
+  --color-red: #D23B2E;
+  --color-red-pale: #FBEBEA;
+
+  /* Green — open-now, recycling */
+  --color-green: #1F7A3D;
+  --color-green-pale: #EAF4EE;
+
+  /* Neutrals — concrete gray, zero blue cast */
+  --color-bg: #F5F5F4;
+  --color-card: #ffffff;
+  --color-border: #CFCFCE;
+  --color-border-light: #E5E5E4;
+
+  /* Text */
+  --color-text: #171718;
+  --color-text-mid: #545456;
+  --color-text-light: #808082;
+
+  /* Typography — condensed display over workhorse sans */
+  --font-serif: var(--font-display), "Arial Narrow", sans-serif; /* legacy var name; display face */
+  --font-sans: var(--font-body), system-ui, -apple-system, sans-serif;
+}
+
+:root {
+  /* Spacing & Radius — sharp, utilitarian */
+  --radius: 3px;
+  --radius-lg: 4px;
+  --radius-xl: 6px;
+  --radius-2xl: 8px;
+  --radius-pill: 4px;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+
+/* Display face: condensed, tight, bold — headings read like signage. */
+h1, h2, h3,
+.font-serif {
+  font-family: var(--font-serif);
+  letter-spacing: 0.01em;
+}
+h1 {
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* ─── Prose (guide articles) ─── */
+.prose {
+  --tw-prose-body: var(--color-text);
+  --tw-prose-headings: var(--color-primary);
+  --tw-prose-links: var(--color-accent);
+  --tw-prose-bold: var(--color-text);
+  --tw-prose-bullets: var(--color-text-mid);
+  --tw-prose-counters: var(--color-text-mid);
+  --tw-prose-hr: var(--color-border);
+}
+
+.prose h2,
+.prose h3 {
+  font-family: var(--font-serif);
+}
+
+.prose h2 {
+  font-size: 1.375rem;
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose h3 {
+  font-size: 1.125rem;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose p,
+.prose li {
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.prose a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+
+.prose a:hover {
+  color: var(--color-accent-light);
+}
+
+.prose hr {
+  border-color: var(--color-border);
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+/* ─── Navbar — solid charcoal bar ─── */
+.nav-frosted {
+  background: var(--color-primary);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.nav-frosted a {
+  color: #E9EBEE;
+}
+.nav-frosted a:hover {
+  color: var(--color-accent);
+}
+
+/* ─── Tag styles ─── */
+.tag-activity {
+  background: var(--color-accent);
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+.tag-produce {
+  background: var(--color-green-pale);
+  color: var(--color-green);
+}
+.tag-amenity {
+  background: var(--color-primary-pale);
+  color: var(--color-primary-light);
+}
+
+/* ─── Star rating ─── */
+.star-filled { color: var(--color-accent); }
+.star-empty { color: var(--color-border); }
+
+/* ─── Map: selected-pin name label (Leaflet tooltip) ───
+ * Doubled selector beats leaflet.css's own .leaflet-tooltip rules. */
+.leaflet-tooltip.facility-map-tooltip {
+  background: #ffffff;
+  color: var(--color-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+.leaflet-tooltip-top.facility-map-tooltip::before {
+  border-top-color: #ffffff;
+}

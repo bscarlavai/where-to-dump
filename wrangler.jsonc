@@ -1,0 +1,26 @@
+{
+  "name": "wheretodump",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-04-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "r2_buckets": [
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      // Create before first remote deploy: `npx wrangler r2 bucket create wheretodump-inc-cache`
+      "bucket_name": "wheretodump-inc-cache"
+    }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "wheretodump-db",
+      // Local dev works with this placeholder. Before the first remote deploy:
+      // `npx wrangler d1 create wheretodump-db` and paste the real id here.
+      "database_id": "00000000-0000-0000-0000-000000000000"
+    }
+  ]
+}
