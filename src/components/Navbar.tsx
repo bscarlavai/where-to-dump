@@ -43,13 +43,14 @@ export function Navbar() {
         </button>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile menu — stays on the charcoal nav surface so the global
+          .nav-frosted link color (near-white) reads correctly */}
       {menuOpen && (
-        <div className="sm:hidden border-t border-border px-4 py-3 flex flex-col gap-3 bg-bg">
-          <Link href="/states" className="text-sm font-medium text-text-mid hover:text-primary" onClick={() => setMenuOpen(false)}>
+        <div className="sm:hidden border-t border-white/10 px-4 py-4 flex flex-col gap-4 bg-primary">
+          <Link href="/states" className="text-sm font-semibold uppercase tracking-wide" onClick={() => setMenuOpen(false)}>
             States
           </Link>
-          <Link href="/near-me" className="text-sm font-medium text-text-mid hover:text-primary" onClick={() => setMenuOpen(false)}>
+          <Link href="/near-me" className="text-sm font-semibold uppercase tracking-wide" onClick={() => setMenuOpen(false)}>
             Near Me
           </Link>
         </div>

@@ -56,15 +56,16 @@ function createFacilityIcon(selected = false) {
   });
 }
 
+// Standard maps convention: the user's own position is a blue dot
 function createUserIcon() {
   return L.divIcon({
     className: "",
     html: `<div style="
       width: 16px; height: 16px;
-      background: #E07A3A;
+      background: #4285F4;
       border: 3px solid white;
       border-radius: 50%;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.35);
     "></div>`,
     iconSize: [16, 16],
     iconAnchor: [8, 8],
