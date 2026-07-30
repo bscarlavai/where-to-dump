@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(npm pkg set:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx tsx:*)",
+      "Bash(node -e:*)",
+      "Bash(npx wrangler d1 execute wheretodump-db --local:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(curl -s http://localhost:3000:*)",
+      "Bash(curl -s -o /dev/null -w:*)",
+      "Bash(sips:*)",
+      "Bash(qlmanage:*)"
+    ],
+    "deny": [
+      "Bash(npx wrangler d1 execute:* --remote:*)",
+      "Read(.env.local)",
+      "Read(.env*)"
+    ]
+  }
+}

@@ -178,12 +178,12 @@ export default async function StatePage({ params }: Props) {
                 ))}
               </div>
               {activeAccepts.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-3">
+                <div className="flex flex-wrap gap-2 mt-2">
                   {activeAccepts.map((slug) => (
                     <Link
                       key={slug}
                       href={`/${stateSlug}/accepts/${slug}`}
-                      className="bg-primary-pale text-primary text-sm font-semibold px-3.5 py-1.5 rounded-full hover:bg-primary hover:text-white transition-colors"
+                      className="bg-primary text-white text-sm font-semibold uppercase tracking-[0.04em] px-3.5 py-1.5 rounded-full hover:opacity-80 transition-opacity"
                     >
                       {ACCEPTS_SEO_LABELS[slug]}
                       <span className="ml-1 opacity-60">{acceptsCounts[slug]}</span>
