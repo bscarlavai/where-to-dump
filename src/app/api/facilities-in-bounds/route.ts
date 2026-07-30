@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
   const hasUserLocation = !isNaN(userLat) && !isNaN(userLng);
 
   try {
-    const { results: rows } = await getDb()
+    const { results: rows } = await (await getDb())
       .prepare(
         `SELECT ${CARD_FIELDS}, lat, lng FROM facilities
          WHERE ${VISIBLE}

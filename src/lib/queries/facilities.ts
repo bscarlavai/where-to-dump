@@ -51,7 +51,7 @@ export async function getFacilitiesByMaterial(
   material: string
 ): Promise<FacilityCardData[]> {
   try {
-    const { results } = await getDb()
+    const { results } = await (await getDb())
       .prepare(
         `SELECT ${CARD_FIELDS} FROM facilities
          WHERE state_slug = ?1 AND ${VISIBLE}
@@ -69,7 +69,7 @@ export async function getFacilitiesByMaterial(
 
 export async function getFacilitiesByState(stateSlug: string): Promise<FacilityCardData[]> {
   try {
-    const { results } = await getDb()
+    const { results } = await (await getDb())
       .prepare(
         `SELECT ${CARD_FIELDS} FROM facilities WHERE state_slug = ?1 AND ${VISIBLE}
          ORDER BY google_review_count DESC`
@@ -88,7 +88,7 @@ export async function getFacilitiesByCity(
   citySlug: string
 ): Promise<FacilityCardData[]> {
   try {
-    const { results } = await getDb()
+    const { results } = await (await getDb())
       .prepare(
         `SELECT ${CARD_FIELDS} FROM facilities
          WHERE state_slug = ?1 AND city_slug = ?2 AND ${VISIBLE}
@@ -109,7 +109,7 @@ export async function getFacilityBySlug(
   slug: string
 ): Promise<Facility | null> {
   try {
-    const row = await getDb()
+    const row = await (await getDb())
       .prepare(
         `SELECT * FROM facilities
          WHERE state_slug = ?1 AND city_slug = ?2 AND slug = ?3 AND ${VISIBLE}`
@@ -128,7 +128,7 @@ export async function getTopRatedFacilitiesByState(
   limit = 5
 ): Promise<FacilityCardData[]> {
   try {
-    const { results } = await getDb()
+    const { results } = await (await getDb())
       .prepare(
         `SELECT ${CARD_FIELDS} FROM facilities
          WHERE state_slug = ?1 AND ${VISIBLE} AND google_rating IS NOT NULL
@@ -149,7 +149,7 @@ export async function getFacilitiesByStateAndType(
   facilityType: FacilityType
 ): Promise<FacilityCardData[]> {
   try {
-    const { results } = await getDb()
+    const { results } = await (await getDb())
       .prepare(
         `SELECT ${CARD_FIELDS} FROM facilities
          WHERE state_slug = ?1 AND ${VISIBLE}
@@ -170,7 +170,7 @@ export async function getFacilitiesByCounty(
   countySlug: string
 ): Promise<FacilityCardData[]> {
   try {
-    const { results } = await getDb()
+    const { results } = await (await getDb())
       .prepare(
         `SELECT ${CARD_FIELDS} FROM facilities
          WHERE state_slug = ?1 AND ${VISIBLE}
@@ -204,7 +204,7 @@ export async function getNearbyFacilities(
   try {
     const { latDelta, lngDelta } = bboxDeltas(centerLat, radiusMiles);
     const typeFilter = facilityType ? `AND (facility_type = ?5 OR secondary_types LIKE ?6)` : "";
-    let stmt = getDb().prepare(
+    let stmt = (await getDb()).prepare(
       `SELECT ${CARD_FIELDS}, lat, lng FROM facilities
        WHERE ${VISIBLE} AND lat BETWEEN ?1 AND ?2 AND lng BETWEEN ?3 AND ?4 ${typeFilter}`
     );
@@ -241,7 +241,7 @@ export async function getFeaturedFacilities(limit = 6): Promise<FacilityCardData
     // Excludes 'unknown' — unclassified records ordered by review count surface
     // exactly the retail noise (car dealers, Apple Stores) we don't want on the
     // home page.
-    const { results } = await getDb()
+    const { results } = await (await getDb())
       .prepare(
         `SELECT ${CARD_FIELDS} FROM facilities
          WHERE ${VISIBLE} AND facility_type != 'unknown'

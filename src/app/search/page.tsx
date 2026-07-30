@@ -36,7 +36,7 @@ export default async function SearchPage({
   let nearbyLabel = "";
 
   if (query.length > 0) {
-    const db = getDb();
+    const db = (await getDb());
     const isZip = /^\d{5}$/.test(query);
 
     if (isZip) {

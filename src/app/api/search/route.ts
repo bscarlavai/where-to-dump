@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
   }
 
   const pattern = `%${q}%`;
-  const db = getDb();
+  const db = (await getDb());
 
   try {
     const [facilitiesResult, citiesResult] = await Promise.all([

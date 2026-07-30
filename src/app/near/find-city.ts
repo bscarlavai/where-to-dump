@@ -21,7 +21,7 @@ export interface NearCity {
  */
 export async function findCity(citySlug: string): Promise<NearCity | null> {
   try {
-    const row = await getDb()
+    const row = await (await getDb())
       .prepare(
         `SELECT c.name, c.slug, s.abbr AS state_abbr, s.slug AS state_slug,
            count(*) AS facility_count, avg(f.lat) AS lat, avg(f.lng) AS lng

@@ -33,7 +33,7 @@ const CITY_SELECT = `
 
 export async function getCitiesByState(stateSlug: string): Promise<City[]> {
   try {
-    const { results } = await getDb()
+    const { results } = await (await getDb())
       .prepare(`${CITY_SELECT} WHERE s.slug = ?1 AND ${VISIBLE} GROUP BY c.id ORDER BY c.name`)
       .bind(stateSlug)
       .all<CityRow>();
@@ -46,7 +46,7 @@ export async function getCitiesByState(stateSlug: string): Promise<City[]> {
 
 export async function getCityBySlug(stateSlug: string, citySlug: string): Promise<City | null> {
   try {
-    const row = await getDb()
+    const row = await (await getDb())
       .prepare(`${CITY_SELECT} WHERE s.slug = ?1 AND c.slug = ?2 AND ${VISIBLE} GROUP BY c.id`)
       .bind(stateSlug, citySlug)
       .first<CityRow>();

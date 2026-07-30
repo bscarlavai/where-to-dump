@@ -9,7 +9,7 @@ export const revalidate = 86400; // 24 hours
 
 export async function GET() {
   // Cities with visible facilities, busiest first
-  const { results: cities } = await getDb()
+  const { results: cities } = await (await getDb())
     .prepare(
       `SELECT city_slug, count(*) AS facility_count FROM facilities
        WHERE ${VISIBLE}

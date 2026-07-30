@@ -26,7 +26,7 @@ function toState(row: StateRow): State {
 /** States that have at least one visible facility, with counts. */
 export async function getAllStates(): Promise<State[]> {
   try {
-    const { results } = await getDb()
+    const { results } = await (await getDb())
       .prepare(
         `SELECT s.id, s.name, s.abbr, s.slug,
            (SELECT count(*) FROM facilities f WHERE f.state_id = s.id AND ${VISIBLE}) AS facility_count
@@ -42,7 +42,7 @@ export async function getAllStates(): Promise<State[]> {
 
 export async function getStateBySlug(slug: string): Promise<State | null> {
   try {
-    const row = await getDb()
+    const row = await (await getDb())
       .prepare(
         `SELECT s.id, s.name, s.abbr, s.slug,
            (SELECT count(*) FROM facilities f WHERE f.state_id = s.id AND ${VISIBLE}) AS facility_count

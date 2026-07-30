@@ -35,7 +35,7 @@ export default async function AdminPage({ searchParams }: Props) {
     : "imported";
   const needsReview = params.view !== "all";
 
-  const db = getDb();
+  const db = (await getDb());
   const [countsResult, rowsResult] = await Promise.all([
     db
       .prepare(

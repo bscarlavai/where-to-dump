@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const placeholders = ids.map((_, i) => `?${i + 3}`).join(",");
-    const result = await getDb()
+    const result = await (await getDb())
       .prepare(
         `UPDATE facilities
          SET status = ?1,

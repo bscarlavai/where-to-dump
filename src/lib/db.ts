@@ -16,9 +16,11 @@ export interface D1Database {
 }
 
 /** The D1 binding configured in wrangler.jsonc. Works in `next dev` via
- * initOpenNextCloudflareForDev() in next.config.ts. */
-export function getDb(): D1Database {
-  const { env } = getCloudflareContext();
+ * initOpenNextCloudflareForDev() in next.config.ts. Async so statically
+ * prerendered routes (sitemaps, ISR pages) can run at build time — the async
+ * context resolves to local bindings during `next build`. */
+export async function getDb(): Promise<D1Database> {
+  const { env } = await getCloudflareContext({ async: true });
   const db = (env as unknown as { DB?: D1Database }).DB;
   if (!db) throw new Error("D1 binding DB is not configured (check wrangler.jsonc)");
   return db;

@@ -16,7 +16,7 @@ interface CountyRow {
 /** Counties in a state that have at least one visible facility. */
 export async function getCountiesByState(stateSlug: string): Promise<CountyInfo[]> {
   try {
-    const { results } = await getDb()
+    const { results } = await (await getDb())
       .prepare(
         `SELECT co.name AS county, co.slug AS county_slug, s.slug AS state_slug, s.abbr AS state_abbr,
            count(DISTINCT f.city_id) AS city_count,
@@ -41,7 +41,7 @@ export async function getCountyInfo(
   countySlug: string
 ): Promise<CountyInfo | null> {
   try {
-    const row = await getDb()
+    const row = await (await getDb())
       .prepare(
         `SELECT co.name AS county, co.slug AS county_slug, s.slug AS state_slug, s.abbr AS state_abbr,
            count(DISTINCT f.city_id) AS city_count,

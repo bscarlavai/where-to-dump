@@ -9,7 +9,7 @@ export const revalidate = 86400;
 
 export async function GET() {
   // Counties with at least one visible facility
-  const { results: counties } = await getDb()
+  const { results: counties } = await (await getDb())
     .prepare(
       `SELECT DISTINCT f.state_slug, co.slug AS county_slug
        FROM facilities f

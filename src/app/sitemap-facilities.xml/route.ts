@@ -17,7 +17,7 @@ interface FacilityRow {
 }
 
 export async function GET() {
-  const db = getDb();
+  const db = (await getDb());
 
   // Fetch in batches of 1000 to avoid memory issues with large datasets
   const allFacilities: FacilityRow[] = [];

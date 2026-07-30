@@ -9,7 +9,7 @@ export const revalidate = 86400; // Cache for 24 hours
 
 export async function GET() {
   // City pages exist wherever a visible facility does — derive from facilities
-  const { results: cities } = await getDb()
+  const { results: cities } = await (await getDb())
     .prepare(
       `SELECT DISTINCT state_slug, city_slug FROM facilities
        WHERE ${VISIBLE}

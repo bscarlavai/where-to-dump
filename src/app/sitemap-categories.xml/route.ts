@@ -7,11 +7,11 @@ export const revalidate = 86400; // Cache for 24 hours
 
 export async function GET() {
   const [{ results: states }, { results: acceptsStates }] = await Promise.all([
-    getDb()
+    (await getDb())
       .prepare(`SELECT DISTINCT state_slug FROM facilities WHERE ${VISIBLE} ORDER BY state_slug`)
       .all<{ state_slug: string }>(),
     // accepts pages only exist where scraped materials data exists
-    getDb()
+    (await getDb())
       .prepare(
         `SELECT DISTINCT state_slug, value AS material
          FROM facilities, json_each(accepted_materials)
