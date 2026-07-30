@@ -96,7 +96,12 @@ centers, e-waste dropoff, scrap metal, RV dump stations.
      Indiana done 2026-07-30: 28 enriched (23 matched + 5 aliases), 11 review
      candidates unactioned, 1 known gap (United Refuse LF, Fort Wayne — no
      Google listing exists; add manually from LMOP if desired).
-  2. [ ] IDEM/state permit join (permit_number, permit_status) — reuse match.ts
+  2. [x] IDEM permit join — `npm run enrich:idem [-- --dry-run|--refresh]`.
+     Source: IndianaMap ArcGIS layer (script fetches + caches; data.in.gov
+     Socrata is dead, IDEM's own site is PDF-only). Indiana done 2026-07-30:
+     103 facilities carry permit_number + "Authorized (IDEM <type>)", 45
+     authorized sites unmatched (~35 transfer stations = targeted-ingest
+     candidates). Other states: same pattern, find the state DEP/DEQ layer.
   3. [ ] Playwright fees/accepted-materials scraper (the moat)
   4. [ ] E-waste collector lists + INDOT/OSM RV dump seeds
 - Deploy prereqs: buy domain, `wrangler d1 create wheretodump-db` (+ id into
