@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Barlow_Condensed, Barlow } from "next/font/google";
 import { Navbar } from "@/components/Navbar";
+import { LogoMark } from "@/components/LogoMark";
 import { siteUrl } from "./seo";
 import "./globals.css";
 
@@ -25,8 +26,8 @@ export const metadata: Metadata = {
   description:
     "Find the nearest place to dump your trash. Landfills, transfer stations, recycling centers, e-waste drop-off, scrap yards, and RV dump stations across the United States, with hours, fees, and what they accept.",
   icons: {
-    icon: "/favicon.png",
-    apple: "/apple-touch-icon.png",
+    icon: "/favicon.png?v=2",
+    apple: "/apple-touch-icon.png?v=2",
   },
 };
 
@@ -54,7 +55,7 @@ function Footer() {
     <footer className="border-t border-border py-8 px-4">
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-text-mid">
         <div className="flex items-center gap-2">
-          <span aria-hidden className="w-4 h-4 shrink-0 bg-accent" style={{ clipPath: "polygon(0 100%, 100% 100%, 100% 35%, 55% 35%, 40% 0, 0 0)" }} />
+          <LogoMark variant="light" size={24} />
           <span className="font-serif font-bold uppercase tracking-wide text-primary">
             Where To <span className="text-accent">Dump</span>
           </span>

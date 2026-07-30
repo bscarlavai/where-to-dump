@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { LogoMark } from "@/components/LogoMark";
 
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -10,7 +11,7 @@ export function Navbar() {
     <nav className="nav-frosted sticky top-0 z-50 border-b border-border">
       <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center gap-2.5">
-          <span aria-hidden className="w-5 h-5 shrink-0 bg-accent" style={{ clipPath: "polygon(0 100%, 100% 100%, 100% 35%, 55% 35%, 40% 0, 0 0)" }} />
+          <LogoMark variant="dark" size={34} />
           <span className="font-serif text-2xl font-bold uppercase tracking-wide text-white">
             Where To <span className="text-accent">Dump</span>
           </span>
