@@ -102,7 +102,17 @@ centers, e-waste dropoff, scrap metal, RV dump stations.
      103 facilities carry permit_number + "Authorized (IDEM <type>)", 45
      authorized sites unmatched (~35 transfer stations = targeted-ingest
      candidates). Other states: same pattern, find the state DEP/DEQ layer.
-  3. [ ] Playwright fees/accepted-materials scraper (the moat)
+  3. [~] Fees/materials scraper (the moat). Two steps, both repeatable:
+     `npx tsx scripts/enrich/scrape-sites.ts --state <slug>` crawls facility
+     websites into enrichment-data/site-cache/ (fetch-first, Playwright
+     fallback, polite: 1 req/host, WhereToDumpBot UA);
+     `npx tsx scripts/enrich/extract-facts.ts [--dry-run]` extracts fees /
+     accepted_materials / residency / open_to_public with conservative
+     heuristics + provenance (enrich_source_url, enrich_scraped_at). Tune
+     rules, re-run extraction — no re-crawl needed. Indiana 2026-07-30:
+     412 sites crawled, 53 facilities with fees, 315 with materials, 17 with
+     residency rules. STILL TODO: county SWMD site crawl (fees often live on
+     district sites, not facility sites), filter UI + "accepts X" SEO pages.
   4. [ ] E-waste collector lists + INDOT/OSM RV dump seeds
 - Deploy prereqs: buy domain, `wrangler d1 create wheretodump-db` (+ id into
   wrangler.jsonc), `wrangler r2 bucket create wheretodump-inc-cache`,

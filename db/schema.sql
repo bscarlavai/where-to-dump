@@ -91,6 +91,8 @@ CREATE TABLE IF NOT EXISTS facilities (
   permit_status TEXT,
   operator TEXT,
   capacity_notes TEXT,
+  enrich_source_url TEXT,                       -- page the fees/materials came from
+  enrich_scraped_at TEXT,
 
   -- Moderation (manual-only; scripts never set approved/rejected)
   status TEXT NOT NULL DEFAULT 'imported',      -- imported|pending|approved|rejected
