@@ -9,17 +9,25 @@ import type { Facility, FacilityCardData, FacilityType } from "@/types";
  * only the flagged tail (low review_score, unknown type); 'rejected' hides a
  * listing, 'approved' locks it in. Scripts score but never set status.
  */
-const VISIBLE = `status IN ('imported','approved') AND service_only = 0
+export const VISIBLE = `status IN ('imported','approved') AND service_only = 0
   AND (google_business_status IS NULL OR google_business_status != 'CLOSED_PERMANENTLY')`;
 
-const CARD_FIELDS = `id, slug, state_slug, city_slug, name, city, state_abbr,
-  google_rating, google_review_count, facility_type, secondary_types, photo_url, cf_image_id`;
+export const CARD_FIELDS = `id, slug, state_slug, city_slug, name, city, state_abbr,
+  google_rating, google_review_count, facility_type, secondary_types, photo_url, cf_image_id,
+  accepted_materials`;
 
-type CardRow = Omit<FacilityCardData, "secondary_types"> & { secondary_types: string };
+export type CardRow = Omit<FacilityCardData, "secondary_types" | "accepted_materials"> & {
+  secondary_types: string;
+  accepted_materials: string;
+};
 type DetailRow = Record<string, unknown>;
 
-function toCard(row: CardRow): FacilityCardData {
-  return { ...row, secondary_types: parseJson<string[]>(row.secondary_types, []) };
+export function toCard(row: CardRow): FacilityCardData {
+  return {
+    ...row,
+    secondary_types: parseJson<string[]>(row.secondary_types, []),
+    accepted_materials: parseJson<string[]>(row.accepted_materials, []),
+  };
 }
 
 function toFacility(row: DetailRow): Facility {
@@ -35,6 +43,28 @@ function toFacility(row: DetailRow): Facility {
     is_featured: Boolean(row.is_featured),
     open_to_public: row.open_to_public == null ? null : Boolean(row.open_to_public),
   };
+}
+
+/** Facilities in a state that accept a given material (MATERIAL_LABELS key). */
+export async function getFacilitiesByMaterial(
+  stateSlug: string,
+  material: string
+): Promise<FacilityCardData[]> {
+  try {
+    const { results } = await getDb()
+      .prepare(
+        `SELECT ${CARD_FIELDS} FROM facilities
+         WHERE state_slug = ?1 AND ${VISIBLE}
+           AND accepted_materials LIKE '%"' || ?2 || '"%'
+         ORDER BY google_review_count DESC`
+      )
+      .bind(stateSlug, material)
+      .all<CardRow>();
+    return results.map(toCard);
+  } catch (err) {
+    console.error("getFacilitiesByMaterial error:", err);
+    return [];
+  }
 }
 
 export async function getFacilitiesByState(stateSlug: string): Promise<FacilityCardData[]> {

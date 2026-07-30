@@ -1,18 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDb, parseJson } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { haversineMiles } from "@/lib/utils/geo";
 import { rateLimit } from "@/lib/rate-limit";
-import type { FacilityCardData } from "@/types";
+import { VISIBLE, CARD_FIELDS, toCard, type CardRow } from "@/lib/queries/facilities";
 
-// Same visibility clause as src/lib/queries/facilities.ts (module-private there).
-const VISIBLE = `status IN ('imported','approved') AND service_only = 0
-  AND (google_business_status IS NULL OR google_business_status != 'CLOSED_PERMANENTLY')`;
-
-const CARD_FIELDS = `id, slug, state_slug, city_slug, name, city, state_abbr,
-  google_rating, google_review_count, facility_type, secondary_types, photo_url, cf_image_id`;
-
-type BoundsRow = Omit<FacilityCardData, "secondary_types"> & {
-  secondary_types: string;
+type BoundsRow = CardRow & {
   lat: number;
   lng: number;
 };
@@ -51,8 +43,9 @@ export async function GET(request: NextRequest) {
       .all<BoundsRow>();
 
     const results = rows.map((row) => ({
-      ...row,
-      secondary_types: parseJson<string[]>(row.secondary_types, []),
+      ...toCard(row),
+      lat: row.lat,
+      lng: row.lng,
       distance_miles: hasUserLocation
         ? Math.round(haversineMiles(userLat, userLng, row.lat, row.lng) * 10) / 10
         : null,

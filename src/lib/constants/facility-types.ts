@@ -49,6 +49,25 @@ export const CATEGORY_SEO_LABELS: Record<string, string> = {
 };
 
 /** Labels for the accepted_materials moat field. */
+/**
+ * "Accepts X" SEO pages: /[state]/accepts/[slug]. Only materials that don't
+ * already have a facility-type category page (e-waste, scrap metal, hazardous
+ * waste live under /category/).
+ */
+export const ACCEPTS_SLUG_MAP: Record<string, string> = {
+  tires: "tires",
+  appliances: "appliances",
+  "yard-waste": "yard",
+  "construction-debris": "construction",
+};
+
+export const ACCEPTS_SEO_LABELS: Record<string, string> = {
+  tires: "Tire Disposal",
+  appliances: "Appliance Disposal",
+  "yard-waste": "Yard Waste Drop-Off",
+  "construction-debris": "Construction Debris Disposal",
+};
+
 export const MATERIAL_LABELS: Record<string, string> = {
   household: "Household Trash",
   construction: "Construction Debris",

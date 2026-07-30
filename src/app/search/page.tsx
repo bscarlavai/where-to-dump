@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getDb, parseJson } from "@/lib/db";
-import { getNearbyFacilities } from "@/lib/queries/facilities";
+import { getDb } from "@/lib/db";
+import { getNearbyFacilities, VISIBLE, CARD_FIELDS, toCard, type CardRow } from "@/lib/queries/facilities";
 import { FacilityCard } from "@/components/FacilityCard";
 import Breadcrumb from "@/components/Breadcrumb";
 import { canonicalUrl } from "@/app/seo";
@@ -13,14 +13,6 @@ export const metadata: Metadata = {
   alternates: { canonical: canonicalUrl("/search") },
 };
 
-/** Same visibility rules as src/lib/queries/facilities.ts. */
-const VISIBLE = `status IN ('imported','approved') AND service_only = 0
-  AND (google_business_status IS NULL OR google_business_status != 'CLOSED_PERMANENTLY')`;
-
-const CARD_FIELDS = `id, slug, state_slug, city_slug, name, city, state_abbr,
-  google_rating, google_review_count, facility_type, secondary_types, photo_url, cf_image_id`;
-
-type CardRow = Omit<FacilityCardData, "secondary_types"> & { secondary_types: string };
 
 interface CityResult {
   id: number;
@@ -111,10 +103,7 @@ export default async function SearchPage({
           .all<CityResult>(),
       ]);
 
-      facilities = facilitiesResult.results.map((row) => ({
-        ...row,
-        secondary_types: parseJson<string[]>(row.secondary_types, []),
-      }));
+      facilities = facilitiesResult.results.map(toCard);
       cities = citiesResult.results;
     }
   }

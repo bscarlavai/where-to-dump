@@ -7,7 +7,7 @@ import { getCitiesByState } from "@/lib/queries/cities";
 import { getCountiesByState } from "@/lib/queries/counties";
 import { FacilityCard } from "@/components/FacilityCard";
 import Breadcrumb from "@/components/Breadcrumb";
-import { CATEGORY_SLUG_MAP, CATEGORY_SEO_LABELS } from "@/lib/constants/facility-types";
+import { CATEGORY_SLUG_MAP, CATEGORY_SEO_LABELS, ACCEPTS_SLUG_MAP, ACCEPTS_SEO_LABELS } from "@/lib/constants/facility-types";
 import { canonicalUrl } from "@/app/seo";
 import type { FacilityCardData } from "@/types";
 
@@ -57,6 +57,14 @@ export default async function StatePage({ params }: Props) {
   const catCounts = categoryCounts(facilities);
   const activeCategories = Object.keys(CATEGORY_SLUG_MAP).filter((slug) => catCounts[slug]);
   const topFacility = topRated[0];
+
+  // "Accepts X" pages only exist where scraped materials data backs them
+  const acceptsCounts: Record<string, number> = {};
+  for (const [slug, material] of Object.entries(ACCEPTS_SLUG_MAP)) {
+    const n = facilities.filter((f) => (f.accepted_materials ?? []).includes(material)).length;
+    if (n > 0) acceptsCounts[slug] = n;
+  }
+  const activeAccepts = Object.keys(ACCEPTS_SLUG_MAP).filter((slug) => acceptsCounts[slug]);
 
   const categoryLink = (slug: string, text: string) => (
     <Link href={`/${stateSlug}/category/${slug}`} className="text-accent font-semibold hover:underline">{text}</Link>
@@ -169,6 +177,20 @@ export default async function StatePage({ params }: Props) {
                   </Link>
                 ))}
               </div>
+              {activeAccepts.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {activeAccepts.map((slug) => (
+                    <Link
+                      key={slug}
+                      href={`/${stateSlug}/accepts/${slug}`}
+                      className="bg-primary-pale text-primary text-sm font-semibold px-3.5 py-1.5 rounded-full hover:bg-primary hover:text-white transition-colors"
+                    >
+                      {ACCEPTS_SEO_LABELS[slug]}
+                      <span className="ml-1 opacity-60">{acceptsCounts[slug]}</span>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 

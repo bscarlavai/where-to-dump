@@ -122,6 +122,7 @@ export interface FacilityCardData {
   google_review_count: number | null;
   facility_type: FacilityType;
   secondary_types: string[];
+  accepted_materials?: string[];
   photo_url: string | null;
   cf_image_id?: string | null;
   distance_miles?: number | null;
