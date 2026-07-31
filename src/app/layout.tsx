@@ -45,6 +45,14 @@ export default function RootLayout({
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
+        {/* Cloudflare Web Analytics — production only so localhost visits don't pollute the numbers */}
+        {process.env.NODE_ENV === "production" && (
+          <script
+            type="module"
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon='{"token": "0cf0122209fd4390af3168c96501ec2e"}'
+          />
+        )}
       </body>
     </html>
   );
