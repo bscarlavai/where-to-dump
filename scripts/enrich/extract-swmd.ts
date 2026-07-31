@@ -23,7 +23,9 @@ import { nameTokens } from './match';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..', '..');
-const CACHE_DIR = resolve(root, 'enrichment-data', 'swmd-cache');
+const stateIdx = process.argv.indexOf('--state');
+const STATE = stateIdx !== -1 ? process.argv[stateIdx + 1] : 'indiana';
+const CACHE_DIR = resolve(root, 'enrichment-data', 'swmd-cache', STATE);
 const UPDATE_SQL_PATH = resolve(root, 'db', 'update-swmd.sql');
 
 const dryRun = process.argv.includes('--dry-run');
@@ -49,7 +51,7 @@ interface FacilityRow {
 function main() {
   const facilities = d1Query<FacilityRow>(root,
     `SELECT id, name, city, county, fees, website FROM facilities
-     WHERE state_slug = 'indiana' AND service_only = 0
+     WHERE state_slug = '${STATE}' AND service_only = 0
        AND status IN ('imported','approved')`
   );
 

@@ -18,8 +18,10 @@ import { crawlSite, closeBrowser } from './crawl';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..', '..');
-const LIST_PATH = resolve(root, 'enrichment-data', 'indiana-swmd.json');
-const CACHE_DIR = resolve(root, 'enrichment-data', 'swmd-cache');
+const stateIdx = process.argv.indexOf('--state');
+const STATE = stateIdx !== -1 ? process.argv[stateIdx + 1] : 'indiana';
+const LIST_PATH = resolve(root, 'enrichment-data', STATE + '-swmd.json');
+const CACHE_DIR = resolve(root, 'enrichment-data', 'swmd-cache', STATE);
 
 function argValue(flag: string): string | undefined {
   const i = process.argv.indexOf(flag);
