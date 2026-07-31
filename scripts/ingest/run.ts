@@ -113,6 +113,10 @@ if (dryRun) {
 }
 
 // Chunk large query sets into multiple API requests.
+// Queries ride in the GET URL, so the chunk size is capped by URL length —
+// 250 blew past it (HTTP rejection on the Illinois fan-out). 50 is proven;
+// the cross-chunk duplicate billing (~60% overhead) is the cost of the API
+// shape, not something to optimize away here.
 const CHUNK_SIZE = 50;
 const results: OutscraperPlace[][] = [];
 for (let i = 0; i < queries.length; i += CHUNK_SIZE) {
