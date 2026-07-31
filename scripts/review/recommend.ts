@@ -7,9 +7,12 @@
  *                judgment.
  *   --apply      Read enrichment-data/review-recommendations.json (produced
  *                by the judging agents) and stamp admin_notes with
- *                "AI rec: APPROVE|REJECT|UNSURE — <reason>".
- *
- * NEVER touches status — approval stays manual in /admin (standing rule).
+ *                "AI rec: APPROVE|REJECT|UNSURE — <reason>". Never touches
+ *                status.
+ *   --decide     Apply the judgments (standing arrangement 2026-07-30):
+ *                approve/reject set status directly with the reason recorded;
+ *                "unsure" only stamps admin_notes and stays in the queue.
+ *                Only rows still in status='imported' are touched.
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
@@ -25,7 +28,11 @@ const EVIDENCE_B = resolve(root, 'enrichment-data', 'review-evidence-b.json');
 const RECS_PATH = resolve(root, 'enrichment-data', 'review-recommendations.json');
 const UPDATE_SQL_PATH = resolve(root, 'db', 'update-recommendations.sql');
 
-const mode = process.argv.includes('--apply') ? 'apply' : 'evidence';
+const mode = process.argv.includes('--decide')
+  ? 'decide'
+  : process.argv.includes('--apply')
+    ? 'apply'
+    : 'evidence';
 
 interface Row {
   id: number;
@@ -87,17 +94,21 @@ if (mode === 'evidence') {
   );
   const esc = (v: string) => v.replace(/'/g, "''");
   const valid = recs.filter((r) => ['approve', 'reject', 'unsure'].includes(r.recommend));
-  writeFileSync(
-    UPDATE_SQL_PATH,
-    valid
-      .map(
-        (r) =>
-          `UPDATE facilities SET admin_notes = 'AI rec: ${r.recommend.toUpperCase()} — ${esc(r.reason).slice(0, 200)}', updated_at = datetime('now') WHERE id = ${r.id} AND status = 'imported';`
-      )
-      .join('\n') + '\n'
-  );
+
+  const statements = valid.map((r) => {
+    const note = esc(`AI ${mode === 'decide' && r.recommend !== 'unsure' ? 'review' : 'rec'}: ${r.recommend.toUpperCase()} — ${r.reason}`).slice(0, 220);
+    if (mode === 'decide' && r.recommend === 'approve') {
+      return `UPDATE facilities SET status='approved', admin_notes='${note}', updated_at=datetime('now') WHERE id = ${r.id} AND status = 'imported';`;
+    }
+    if (mode === 'decide' && r.recommend === 'reject') {
+      return `UPDATE facilities SET status='rejected', rejection_reason='${esc(r.reason).slice(0, 200)}', admin_notes='${note}', updated_at=datetime('now') WHERE id = ${r.id} AND status = 'imported';`;
+    }
+    return `UPDATE facilities SET admin_notes='${note}', updated_at=datetime('now') WHERE id = ${r.id} AND status = 'imported';`;
+  });
+
+  writeFileSync(UPDATE_SQL_PATH, statements.join('\n') + '\n');
   d1ExecFile(root, UPDATE_SQL_PATH);
   const counts: Record<string, number> = {};
   for (const r of valid) counts[r.recommend] = (counts[r.recommend] ?? 0) + 1;
-  console.log(`Stamped ${valid.length} recommendations:`, JSON.stringify(counts));
+  console.log(`${mode === 'decide' ? 'Decided' : 'Stamped'} ${valid.length}:`, JSON.stringify(counts));
 }

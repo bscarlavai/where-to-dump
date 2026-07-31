@@ -17,7 +17,8 @@
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "enrich:lmop": "tsx scripts/enrich/lmop.ts",
     "enrich:idem": "tsx scripts/enrich/idem.ts",
-    "build:cf": "npx wrangler d1 execute wheretodump-db --local --file=db/production-schema.sql && npx wrangler d1 execute wheretodump-db --local --file=db/production-data.sql && npm run build:worker"
+    "build:cf": "npx wrangler d1 execute wheretodump-db --local --file=db/production-schema.sql && npx wrangler d1 execute wheretodump-db --local --file=db/production-data.sql && npm run build:worker",
+    "enrich:ohio": "tsx scripts/enrich/ohio-epa.ts"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.18.0",
