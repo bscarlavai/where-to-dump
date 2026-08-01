@@ -234,3 +234,18 @@ sisters lack them):
 - SEO gap-closing on the sisters (canonicals/JSON-LD where missing) — high
   value, and Phase 2 touches the same files, so fold in opportunistically
   but don't let it block cutover.
+
+---
+
+## Addendum: reviews decision (2026-08-01)
+
+- **splash-pad-finder:** DELETE the review system during migration. Zero
+  reviews ever submitted (Supabase email-auth friction killed it), and it is
+  the only Supabase Auth consumer — removing it simplifies Phase 2
+  substantially. Port car wash's pattern later only if ever wanted.
+- **self-car-wash-finder:** KEEP reviews (~180 real ones = unique UGC).
+  Migrate the table to D1; keep the public form + honeypot, and add
+  Cloudflare Turnstile (free) to the form during the port.
+- **where-to-dump:** no star reviews. The vertical-correct future feature is
+  a "report fees / confirm info" public form feeding the fees moat
+  (submissions table already fits). Post-traffic feature; not now.
