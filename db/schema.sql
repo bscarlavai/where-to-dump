@@ -93,6 +93,7 @@ CREATE TABLE IF NOT EXISTS facilities (
   capacity_notes TEXT,
   enrich_source_url TEXT,                       -- page the fees/materials came from
   enrich_scraped_at TEXT,
+  free_for_residents INTEGER,                   -- 1 = evidence of free resident drop-off (derive-free.ts)
 
   -- Moderation (manual-only; scripts never set approved/rejected)
   status TEXT NOT NULL DEFAULT 'imported',      -- imported|pending|approved|rejected

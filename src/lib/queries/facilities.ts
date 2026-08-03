@@ -14,11 +14,15 @@ export const VISIBLE = `status IN ('imported','approved') AND service_only = 0
 
 export const CARD_FIELDS = `id, slug, state_slug, city_slug, name, city, state_abbr,
   google_rating, google_review_count, facility_type, secondary_types, photo_url, cf_image_id,
-  accepted_materials`;
+  accepted_materials, free_for_residents`;
 
-export type CardRow = Omit<FacilityCardData, "secondary_types" | "accepted_materials"> & {
+export type CardRow = Omit<
+  FacilityCardData,
+  "secondary_types" | "accepted_materials" | "free_for_residents"
+> & {
   secondary_types: string;
   accepted_materials: string;
+  free_for_residents: number | null;
 };
 type DetailRow = Record<string, unknown>;
 
@@ -27,6 +31,7 @@ export function toCard(row: CardRow): FacilityCardData {
     ...row,
     secondary_types: parseJson<string[]>(row.secondary_types, []),
     accepted_materials: parseJson<string[]>(row.accepted_materials, []),
+    free_for_residents: row.free_for_residents === 1,
   };
 }
 
@@ -42,6 +47,7 @@ function toFacility(row: DetailRow): Facility {
     service_only: Boolean(row.service_only),
     is_featured: Boolean(row.is_featured),
     open_to_public: row.open_to_public == null ? null : Boolean(row.open_to_public),
+    free_for_residents: row.free_for_residents === 1,
   };
 }
 

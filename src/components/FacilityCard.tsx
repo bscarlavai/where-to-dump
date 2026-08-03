@@ -44,6 +44,11 @@ export function FacilityCard({ facility }: { facility: FacilityCardData }) {
             <span className="tag-activity text-[11px] font-semibold px-2.5 py-1 rounded-full">
               {FACILITY_TYPE_LABELS[facility.facility_type]}
             </span>
+            {facility.free_for_residents && (
+              <span className="tag-produce text-[11px] font-semibold px-2.5 py-1 rounded-full">
+                Free for residents
+              </span>
+            )}
             {facility.secondary_types.slice(0, 2).map((type) => (
               <span key={type} className="tag-amenity text-[11px] font-semibold px-2.5 py-1 rounded-full">
                 {type}

@@ -13,6 +13,7 @@ interface Props {
 export function FacilityListWithFilter({ facilities }: Props) {
   const [selectedType, setSelectedType] = useState<FacilityType | null>(null);
   const [selectedMaterial, setSelectedMaterial] = useState<string | null>(null);
+  const [freeOnly, setFreeOnly] = useState(false);
 
   const counts = useMemo(() => {
     const map: Partial<Record<FacilityType, number>> = {};
@@ -33,10 +34,13 @@ export function FacilityListWithFilter({ facilities }: Props) {
   }, [facilities]);
   const activeMaterials = Object.keys(MATERIAL_LABELS).filter((m) => materialCounts[m]);
 
+  const freeCount = facilities.filter((f) => f.free_for_residents).length;
+
   const filtered = facilities.filter(
     (f) =>
       (!selectedType || f.facility_type === selectedType) &&
-      (!selectedMaterial || (f.accepted_materials ?? []).includes(selectedMaterial))
+      (!selectedMaterial || (f.accepted_materials ?? []).includes(selectedMaterial)) &&
+      (!freeOnly || f.free_for_residents)
   );
 
   return (
@@ -51,8 +55,21 @@ export function FacilityListWithFilter({ facilities }: Props) {
       </div>
 
       {/* Accepted-materials filter (facilities with scraped materials only) */}
-      {activeMaterials.length > 0 && (
+      {(activeMaterials.length > 0 || freeCount > 0) && (
         <div className="mb-6 flex flex-wrap items-center gap-1.5">
+          {freeCount > 0 && (
+            <button
+              onClick={() => setFreeOnly(!freeOnly)}
+              className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors mr-2 ${
+                freeOnly
+                  ? "bg-green text-white border-green"
+                  : "bg-green-pale text-green border-green/30 hover:bg-green hover:text-white"
+              }`}
+            >
+              Free for residents
+              <span className="ml-1 opacity-70">{freeCount}</span>
+            </button>
+          )}
           <span className="text-xs font-semibold uppercase tracking-wide text-text-light mr-1">
             Accepts
           </span>

@@ -94,7 +94,7 @@ CREATE TABLE facilities (
   is_featured INTEGER NOT NULL DEFAULT 0,
 
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
-  updated_at TEXT NOT NULL DEFAULT (datetime('now')), review_score INTEGER, review_reasons TEXT NOT NULL DEFAULT '[]', enrich_source_url TEXT, enrich_scraped_at TEXT,
+  updated_at TEXT NOT NULL DEFAULT (datetime('now')), review_score INTEGER, review_reasons TEXT NOT NULL DEFAULT '[]', enrich_source_url TEXT, enrich_scraped_at TEXT, free_for_residents INTEGER,
 
   UNIQUE(state_slug, city_slug, slug)
 );

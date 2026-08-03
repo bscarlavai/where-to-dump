@@ -29,6 +29,7 @@ interface NearbyFacility {
   secondary_types: string[];
   photo_url: string | null;
   cf_image_id: string | null;
+  free_for_residents?: boolean;
   lat: number;
   lng: number;
   distance_miles: number | null;
@@ -65,6 +66,7 @@ export default function NearMePage() {
   const [bounds, setBounds] = useState<MapBounds | null>(null);
   const [showSearchButton, setShowSearchButton] = useState(false);
   const [selectedType, setSelectedType] = useState<FacilityType | null>(null);
+  const [freeOnly, setFreeOnly] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const initialSearchDone = useRef(false);
   const initialFetchComplete = useRef(false);
@@ -108,9 +110,13 @@ export default function NearMePage() {
     return map;
   }, [facilities]);
 
-  const filteredFacilities = selectedType
-    ? facilities.filter((f) => matchesType(f, selectedType))
-    : facilities;
+  const freeCount = facilities.filter((f) => f.free_for_residents).length;
+
+  const filteredFacilities = facilities.filter(
+    (f) =>
+      (!selectedType || matchesType(f, selectedType)) &&
+      (!freeOnly || f.free_for_residents)
+  );
 
   async function fetchFacilitiesInBounds(b: MapBounds) {
     setLocationState({ status: "loading" });
@@ -231,12 +237,27 @@ export default function NearMePage() {
           <div className="space-y-6">
             {/* Type filter */}
             {facilities.length > 0 && (
-              <TypeFilter
-                selected={selectedType}
-                onChange={setSelectedType}
-                counts={typeCounts}
-                totalCount={facilities.length}
-              />
+              <div className="flex flex-wrap items-center gap-2">
+                <TypeFilter
+                  selected={selectedType}
+                  onChange={setSelectedType}
+                  counts={typeCounts}
+                  totalCount={facilities.length}
+                />
+                {freeCount > 0 && (
+                  <button
+                    onClick={() => setFreeOnly(!freeOnly)}
+                    className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors ${
+                      freeOnly
+                        ? "bg-green text-white border-green"
+                        : "bg-green-pale text-green border-green/30 hover:bg-green hover:text-white"
+                    }`}
+                  >
+                    Free for residents
+                    <span className="ml-1 opacity-70">{freeCount}</span>
+                  </button>
+                )}
+              </div>
             )}
 
             {/* Map, pinned below the navbar while the list scrolls */}
@@ -303,6 +324,7 @@ export default function NearMePage() {
                         secondary_types: facility.secondary_types || [],
                         photo_url: facility.photo_url,
                         cf_image_id: facility.cf_image_id,
+                        free_for_residents: facility.free_for_residents,
                         distance_miles: facility.distance_miles,
                       }}
                     />

@@ -273,6 +273,19 @@ export default async function FacilityDetailPage({ params }: Props) {
           </div>
         )}
 
+        {/* Free for residents */}
+        {facility.free_for_residents && (
+          <div className="mb-8">
+            <div className="bg-green-pale border border-green/20 rounded-xl px-5 py-3.5">
+              <p className="text-sm text-text">
+                <strong className="text-green">Free for residents:</strong>{" "}
+                this facility&apos;s published information indicates local residents can
+                drop off at no charge (rules and materials vary, so confirm before hauling).
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Residency restriction */}
         {facility.residency_restriction && (
           <div className="mb-8">

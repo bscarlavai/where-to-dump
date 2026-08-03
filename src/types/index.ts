@@ -60,6 +60,7 @@ export interface Facility {
   fees: Record<string, string> | null;
   residency_restriction: string | null;
   open_to_public: boolean | null;
+  free_for_residents: boolean;
   permit_number: string | null;
   permit_status: string | null;
   operator: string | null;
@@ -123,6 +124,7 @@ export interface FacilityCardData {
   facility_type: FacilityType;
   secondary_types: string[];
   accepted_materials?: string[];
+  free_for_residents?: boolean;
   photo_url: string | null;
   cf_image_id?: string | null;
   distance_miles?: number | null;
