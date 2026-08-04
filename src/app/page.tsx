@@ -119,7 +119,8 @@ export default async function HomePage() {
           </div>
           <div className="text-center mt-6">
             <Link href="/states" className="text-accent font-semibold text-sm hover:underline">
-              View all 50 states &rarr;
+              View all {statesWithFacilities.length}{" "}
+              {statesWithFacilities.length === 1 ? "state" : "states"} &rarr;
             </Link>
           </div>
         </div>
