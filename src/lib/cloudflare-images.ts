@@ -1,4 +1,8 @@
-const CLOUDFLARE_ACCOUNT_HASH = process.env.NEXT_PUBLIC_CLOUDFLARE_IMAGES_ACCOUNT_HASH || '';
+// Fallback is committed on purpose: the hash is public (it's in every delivery
+// URL) and the CI build machine has no .env.local — without this, CI builds
+// silently hotlink Google photos sitewide (the LCP-spike incident of 2026-08-06).
+const CLOUDFLARE_ACCOUNT_HASH =
+  process.env.NEXT_PUBLIC_CLOUDFLARE_IMAGES_ACCOUNT_HASH || 'D-eKqFy3vQzSCwigzF9JpQ';
 
 /**
  * Construct a Cloudflare Images delivery URL.
