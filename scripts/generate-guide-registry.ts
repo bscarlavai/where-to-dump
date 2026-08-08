@@ -27,8 +27,45 @@ function processAffiliateLinks(content: string): string {
  * Simple markdown to HTML conversion for the subset we use in guides.
  * Handles: headings, paragraphs, bold, italic, links, lists, hrs, blockquotes.
  */
+/**
+ * Join soft-wrapped lines into one logical block, the way real markdown does.
+ *
+ * The converter below is line-at-a-time, so without this a paragraph hard
+ * wrapped at 90 characters renders as one <p> per source line, and a wrapped
+ * list item breaks out of its own <ul> mid-sentence. Every guide here happens
+ * to be written unwrapped, so nothing is currently broken, but the next one
+ * that wraps would break silently. Ported from dotphysicalmap, where wrapped
+ * sources shipped the bug for real.
+ */
+function foldSoftWraps(md: string): string {
+  const isBlockStart = (l: string) => {
+    const t = l.trim();
+    return (
+      t === '' ||
+      /^#{1,6}\s/.test(t) ||
+      /^---+$/.test(t) ||
+      /^[-*]\s+/.test(t) ||
+      /^\d+\.\s+/.test(t) ||
+      /^>/.test(t) ||
+      /^<\/?[a-zA-Z]/.test(t)   // raw HTML block (AffiliateLink already expanded)
+    );
+  };
+  // A heading or rule is self-contained: never absorb the line after it.
+  const isSelfClosing = (l: string) => /^#{1,6}\s/.test(l.trim()) || /^---+$/.test(l.trim());
+
+  const out: string[] = [];
+  for (const line of md.split('\n')) {
+    const prev = out[out.length - 1];
+    const canFold =
+      prev !== undefined && prev.trim() !== '' && !isSelfClosing(prev) && !isBlockStart(line);
+    if (canFold) out[out.length - 1] = `${prev} ${line.trim()}`;
+    else out.push(line);
+  }
+  return out.join('\n');
+}
+
 function markdownToHtml(md: string): string {
-  const lines = md.split('\n');
+  const lines = foldSoftWraps(md).split('\n');
   const html: string[] = [];
   let inList = false;
   let listType: 'ul' | 'ol' = 'ul';
