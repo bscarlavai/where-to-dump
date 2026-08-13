@@ -20,6 +20,13 @@ export default async function HomePage() {
 
   const statesWithFacilities = states.filter((s) => s.facility_count > 0);
   const totalFacilities = statesWithFacilities.reduce((sum, s) => sum + s.facility_count, 0);
+
+  // The production push briefly empties tables (drop + re-insert). If this
+  // page revalidates inside that window it would cache "0 facilities across
+  // 0 states" for an hour. Throwing keeps the previous good render cached.
+  if (totalFacilities === 0) {
+    throw new Error("Empty DB snapshot during revalidation; keeping stale page");
+  }
   const topStates = statesWithFacilities.length > 0
     ? statesWithFacilities.slice(0, 12)
     : states.slice(0, 12);
